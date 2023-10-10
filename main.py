@@ -12,6 +12,16 @@ screen_width=600
 
 screen=pygame.display.set_mode([screen_width,screen_height])
 
+
+# Define a Player object by extending pygame.sprite.Sprite
+# The surface drawn on the screen is now an attribute of 'player'
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Player, self).__init__()
+        self.surf = pygame.Surface((75, 25))
+        self.surf.fill((255, 255, 255))
+        self.rect = self.surf.get_rect()
+
 game_running = True 
 while game_running:
   for event in pygame.event.get():
