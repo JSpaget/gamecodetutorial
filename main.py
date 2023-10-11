@@ -1,6 +1,7 @@
 import pygame
 import random
 from pygame.locals import (
+    RLEACCEL,
     K_UP,
     K_DOWN,
     K_LEFT,
@@ -52,7 +53,7 @@ class Enemy(pygame.sprite.Sprite):
                 random.randint(0, screen_height),
             )
         )
-        self.speed = random.randint(5, 20)
+        self.speed = random.randint(5, 30)
 
     def update(self):
         self.rect.move_ip(-self.speed, 0)
@@ -63,6 +64,8 @@ class Enemy(pygame.sprite.Sprite):
 pygame.init()
 
 screen = pygame.display.set_mode([screen_width, screen_height])
+addenemy = pygame.USEREVENT + 1
+pygame.time.set_timer(addenemy, 300)
 player = Player()
 clock = pygame.time.Clock()
 enemies = pygame.sprite.Group()
@@ -80,13 +83,23 @@ while game_running:
         elif event.type == QUIT:
             game_running = False
 
+        elif event.type == addenemy:
+            new_enemy = Enemy()
+            enemies.add(new_enemy)
+            all_sprites.add(new_enemy)
+
     pressed_keys = pygame.key.get_pressed()
 
     player.update(pressed_keys)
+    enemies.update()
 
     screen.fill((0, 0, 0))
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
+
+    if pygame.sprite.spritecollideany(player, enemies):
+        player.kill()
+        game_running = False
 
     pygame.display.flip()
     clock.tick(30)
